@@ -132,7 +132,7 @@ This project provides a modular, flexible, and scalable structure for managing f
 ## 🛠️ Installation
 1. Clone this repository:
    ```bash
-   git clone https://github.com/eze-ms/S2.03-N2-E2
+   git clone https://github.com/eze-ms/S2.03-N2-E1
 
 ---
 
