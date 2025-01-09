@@ -4,26 +4,11 @@ import gm.repository.DatabaseRepository;
 import gm.model.Client;
 import org.bson.Document;
 
-import java.util.UUID;
-
 public class ClientService {
     private final DatabaseRepository repository;
 
     public ClientService(DatabaseRepository repository) {
         this.repository = repository;
-    }
-
-    public Client createClient(String firstName, String lastName, String street, String number,
-                               String floor, String postalCode, String city, String province,
-                               String phoneNumber, String additionalNote) {
-
-        if (firstName == null || lastName == null || postalCode == null || city == null || phoneNumber == null) {
-            System.out.println("Datos incompletos para crear el cliente.");
-            return null;
-        }
-
-        String clientId = UUID.randomUUID().toString();
-        return new Client(clientId, firstName, lastName, street, number, floor, postalCode, city, province, phoneNumber, additionalNote);
     }
 
     public String insertClient(Client client) {

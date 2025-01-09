@@ -1,15 +1,10 @@
 package gm.repository;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import gm.model.Client;
-import gm.model.Order;
-import gm.model.Product;
+import gm.model.*;
 import org.bson.Document;
 
 public class DatabaseRepository {
@@ -123,7 +118,8 @@ public class DatabaseRepository {
                         .append("description", product.getDescription())
                         .append("imageUrl", product.getImageUrl())
                         .append("price", product.getPrice())
-                        .append("category", product.getCategory());
+                        .append("category", product.getCategory())
+                        .append("storeId", product.getStoreId());
 
                 productCollection.updateOne(
                         new Document("id", productId),
@@ -137,7 +133,8 @@ public class DatabaseRepository {
                         .append("description", product.getDescription())
                         .append("imageUrl", product.getImageUrl())
                         .append("price", product.getPrice())
-                        .append("category", product.getCategory());
+                        .append("category", product.getCategory())
+                        .append("storeId", product.getStoreId());
 
                 productCollection.insertOne(newProduct);
                 System.out.println("Producto insertado con id: " + productId);
@@ -260,4 +257,156 @@ public class DatabaseRepository {
         System.out.println("Orden eliminada correctamente.");
     }
 
+    //! Métodos stores
+    public String insertStore(Store store) {
+        try {
+            MongoCollection<Document> storeCollection = database.getCollection("store");
+
+            // Buscar si ya existe una tienda con la misma dirección y código postal
+            Document existingStore = storeCollection.find(
+                    new Document("address", store.getAddress()).append("postalCode", store.getPostalCode())
+            ).first();
+
+            Document dbStore;
+            String storeId;
+
+            if (existingStore != null) {
+                storeId = existingStore.getString("id");
+                System.out.println("Esta tienda ya existe con id: " + storeId);
+
+                // Actualizar la tienda
+                dbStore = new Document("address", store.getAddress())
+                        .append("postalCode", store.getPostalCode())
+                        .append("city", store.getCity())
+                        .append("province", store.getProvince());
+
+                storeCollection.updateOne(
+                        new Document("id", storeId),
+                        new Document("$set", dbStore)
+                );
+                System.out.println("Tienda actualizada correctamente.");
+            } else {
+                // Crear una nueva tienda
+                storeId = UUID.randomUUID().toString(); // Generación de UUID para la tienda
+                dbStore = new Document("id", storeId)
+                        .append("address", store.getAddress())
+                        .append("postalCode", store.getPostalCode())
+                        .append("city", store.getCity())
+                        .append("province", store.getProvince());
+
+                storeCollection.insertOne(dbStore);
+                System.out.println("Tienda insertada con id: " + storeId);
+            }
+
+            return storeId;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al insertar o actualizar la tienda.");
+            return null;
+        }
+    }
+
+    public Document findStoreById(String storeId) {
+        MongoCollection<Document> storeCollection = database.getCollection("store");
+        return storeCollection.find(new Document("id", storeId)).first();
+    }
+
+    public FindIterable<Document> findAllStores() {
+        MongoCollection<Document> storeCollection = database.getCollection("store");
+        return storeCollection.find();
+    }
+
+    public void updateStore(String storeId, Document updateStore) {
+        MongoCollection<Document> storeCollection = database.getCollection("store");
+        storeCollection.updateOne(
+                new Document("id", storeId),
+                new Document("$set", updateStore)
+        );
+        System.out.println("Tienda actualizada correctamente.");
+    }
+
+    public void deleteStoreById(String storeId) {
+        MongoCollection<Document> storeCollection = database.getCollection("store");
+        storeCollection.deleteOne(new Document("id", storeId));
+        System.out.println("Tienda eliminada correctamente.");
+    }
+
+
+    //! Métodos employee
+    public String insertEmployee(Employee employee) {
+        try {
+            MongoCollection<Document> employeeCollection = database.getCollection("employee");
+
+            // Buscar si ya existe un empleado con el mismo NIF o teléfono
+            Document existingEmployee = employeeCollection.find(
+                    new Document("nif", employee.getNif()).append("phone", employee.getPhone())
+            ).first();
+
+            Document dbEmployee;
+            String employeeId;
+
+            if (existingEmployee != null) {
+                employeeId = existingEmployee.getString("id");
+                System.out.println("Este empleado ya existe con id: " + employeeId);
+
+                // Actualizar el empleado
+                dbEmployee = new Document("firstName", employee.getFirstName())
+                        .append("lastName", employee.getLastName())
+                        .append("nif", employee.getNif())
+                        .append("phone", employee.getPhone())
+                        .append("role", employee.getRole())
+                        .append("storeId", employee.getStoreId());
+
+                employeeCollection.updateOne(
+                        new Document("id", employeeId),
+                        new Document("$set", dbEmployee)
+                );
+                System.out.println("Empleado actualizado correctamente.");
+            } else {
+                // Crear un nuevo empleado
+                employeeId = UUID.randomUUID().toString(); // Generación de UUID para el empleado
+                dbEmployee = new Document("id", employeeId)
+                        .append("firstName", employee.getFirstName())
+                        .append("lastName", employee.getLastName())
+                        .append("nif", employee.getNif())
+                        .append("phone", employee.getPhone())
+                        .append("role", employee.getRole())
+                        .append("storeId", employee.getStoreId());
+
+                employeeCollection.insertOne(dbEmployee);
+                System.out.println("Empleado insertado con id: " + employeeId);
+            }
+
+            return employeeId;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al insertar o actualizar el empleado.");
+            return null;
+        }
+    }
+
+    public Document findEmployeeById(String employeeId) {
+        MongoCollection<Document> employeeCollection = database.getCollection("employee");
+        return employeeCollection.find(new Document("id", employeeId)).first();
+    }
+
+    public FindIterable<Document> findAllEmployees() {
+        MongoCollection<Document> employeeCollection = database.getCollection("employee");
+        return employeeCollection.find();
+    }
+
+    public void updateEmployee(String employeeId, Document updateEmployee) {
+        MongoCollection<Document> employeeCollection = database.getCollection("employee");
+        employeeCollection.updateOne(
+                new Document("id", employeeId),
+                new Document("$set", updateEmployee)
+        );
+        System.out.println("Empleado actualizada correctamente.");
+    }
+
+    public void deleteEmployeeById(String employeeId) {
+        MongoCollection<Document> employeeCollection = database.getCollection("employee");
+        employeeCollection.deleteOne(new Document("id", employeeId));
+        System.out.println("Empleado eliminada correctamente.");
+    }
 }

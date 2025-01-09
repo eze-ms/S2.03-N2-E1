@@ -7,7 +7,6 @@ import gm.model.Product;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class ProductService {
     private final DatabaseRepository repository;
@@ -19,23 +18,6 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public Product createProduct(String name, String description, String imageUrl, double price, String category) {
-        // Validación del precio
-        if (price <= 0) {
-            System.out.println("Precio no válido");
-            return null;
-        }
-
-        // Validación de la categoría
-        if (!validCategories.contains(category)) {
-            System.out.println("Categoría no válida");
-            return null;
-        }
-
-        // Crear id del producto y devolver el producto
-        String productId = UUID.randomUUID().toString();
-        return new Product(productId, name, description, imageUrl, price, category);
-    }
 
     public String insertProduct(Product product) {
         try {

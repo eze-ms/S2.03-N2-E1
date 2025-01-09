@@ -6,17 +6,19 @@ public class Product {
     private String description;
     private String imageUrl;
     private double price;
-    private String category; // For pizzas, category can change throughout the year
+    private String category;
+    private String storeId;
 
     // Constructor
     public Product(String id, String name, String description, String imageUrl,
-                   double price, String category) {
+                   double price, String category, String storeId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
         this.price = price;
         this.category = category;
+        this.storeId = storeId;
     }
 
     // Getter only for id
@@ -63,5 +65,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 }
