@@ -71,11 +71,36 @@ The model is scalable and allows for the addition of future features like:
 ### Repositories
 - **DatabaseRepository:** Handles CRUD operations directly with the database.
   - Methods like **insertClient**, **insertProduct**, **insertOrder** **handle insertions**, **updates**, and queries for entities.
-  
+
 ### Services
-- **ClientService:** Provides business logic for managing clients, using repository methods.
-- **ProductService:** Manages the products available in the store, using the repository for CRUD operations.
-- **OrderService:** Handles the orders placed by clients, including validation logic and order processing.
+- **ClientService**: Manages client-related operations, including creation, updates, and deletions, using repository methods.
+- **ProductService**: Handles product-related operations, such as adding, updating, and querying products, with repository interaction.
+   - **Category validation**: Validates the category of products. A predefined set of valid categories is used (`"pizza"`, `"hamburguesa"`, `"bebida"`).
+- **OrderService**: Manages orders placed by clients, ensuring proper relationships between clients, products, and employees.
+- **StoreService**: Manages store-related operations, including adding, retrieving, updating, and deleting stores.
+- **EmployeeService**: Manages employee-related operations, such as handling employee records, assignments, and queries.
+
+**All services follow the same pattern:**
+1. **CRUD operations**: All entities (store, product, order, employee, and client) have their respective service handling creation, retrieval, updating, and deletion through methods in the service layer.
+2. **Error handling**: Each service ensures proper error handling during database operations, printing relevant messages when issues occur.
+3. **Repository interaction**: The services delegate the actual CRUD operations to the `DatabaseRepository`, which directly interacts with the MongoDB database, maintaining the separation of concerns.
+
+
+
+### DataSeeder Class
+
+The **DataSeeder** class is responsible for seeding the database with sample data, making it ready for use. It interacts with the service layer to add clients, products, stores, employees, and orders.
+
+- **Client Creation**: A new client is created and inserted into the database using `ClientService`.
+- **Store Creation**: A new store is created and inserted into the database using `StoreService`.
+- **Product Creation**: A product is created with a reference to the `storeId` of the newly created store, and added using `ProductService`.
+- **Employee Creation**: An employee is created and associated with the store, and added using `EmployeeService`.
+- **Order Creation**: An order is created and linked to a specific client and store. It includes details of the products ordered, the employee who processed it, and other relevant information. This order is inserted using `OrderService`.
+
+#### **Key Functions in DataSeeder**:
+1. **Store, Client, Product, and Employee Creation**: Creates instances of each entity, passing the necessary data (including relationships like `storeId` for products and employees).
+2. **Order Creation**: An order is created, linking it to the created client, store, and employee, and inserted into the database.
+3. **Service Utilization**: Leverages service methods to interact with the database, ensuring business logic is followed and separation of concerns is maintained.
 
 ---
 
@@ -107,7 +132,7 @@ This project provides a modular, flexible, and scalable structure for managing f
 ## 🛠️ Installation
 1. Clone this repository:
    ```bash
-   git clone https://github.com/eze-ms/food-delivery-management
+   git clone https://github.com/eze-ms/S2.03-N2-E2
 
 ---
 

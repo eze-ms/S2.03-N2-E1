@@ -78,5 +78,4 @@ public class StoreService {
             System.err.println("Error al eliminar tienda: " + e.getMessage());
         }
     }
-
 }
