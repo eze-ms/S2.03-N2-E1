@@ -11,6 +11,7 @@ import gm.service.OrderService;
 import gm.service.StoreService;
 import gm.service.EmployeeService;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,9 +36,25 @@ public class DataSeeder {
         Store newStore = new Store(UUID.randomUUID().toString(), "Calle Falsa 123", "08001", "Barcelona", "Barcelona");
         storeService.insertStore(newStore);
 
-        // Crear y agregar un cliente
-        Client newClient = new Client(UUID.randomUUID().toString(), "Carlos", "Peña", "Calle Mayor", "123", "3B", "08001", "Barcelona", "Barcelona", "678912345", "Sin cebolla");
+        // Crear un nuevo cliente con la fecha de registro incluida
+        Client newClient = new Client(
+                UUID.randomUUID().toString(),
+                "Carlos",
+                "Peña",
+                "Calle Mayor",
+                "123",
+                "3B",
+                "08001",
+                "Barcelona",
+                "Barcelona",
+                "678912345",
+                "Sin cebolla",
+                new Date()  // Fecha de registro actual
+        );
+
+// Insertar el cliente en la base de datos
         clientService.insertClient(newClient);
+
 
         // Crear y agregar un producto con el storeId de la tienda recién creada
         Product newProduct = new Product(UUID.randomUUID().toString(),

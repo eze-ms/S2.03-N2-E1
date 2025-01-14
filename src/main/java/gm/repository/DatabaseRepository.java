@@ -1,5 +1,6 @@
 package gm.repository;
 
+import java.util.Date;
 import java.util.UUID;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -23,7 +24,7 @@ public class DatabaseRepository {
         try {
             MongoCollection<Document> clientCollection = database.getCollection("client");
 
-            // Buscar si el cliente ya existe por email o teléfono
+            // Buscar si el cliente ya existe por número de teléfono
             Document existingClient = clientCollection.find(new Document("phoneNumber", client.getPhoneNumber())).first();
             String clientId;
 
@@ -31,7 +32,7 @@ public class DatabaseRepository {
                 clientId = existingClient.getString("id");
                 System.out.println("Cliente ya existe con id: " + clientId);
 
-                // Actualizar el cliente
+                // Actualizar el cliente (sin modificar registerDate)
                 Document updatedClient = new Document("firstName", client.getFirstName())
                         .append("lastName", client.getLastName())
                         .append("street", client.getStreet())
@@ -49,6 +50,7 @@ public class DatabaseRepository {
                 );
                 System.out.println("Cliente actualizado correctamente.");
             } else {
+                // Crear un nuevo cliente con fecha de registro actual
                 clientId = UUID.randomUUID().toString(); // Generación de UUID
                 Document newClient = new Document("id", clientId)
                         .append("firstName", client.getFirstName())
@@ -60,7 +62,8 @@ public class DatabaseRepository {
                         .append("city", client.getCity())
                         .append("province", client.getProvince())
                         .append("phoneNumber", client.getPhoneNumber())
-                        .append("additionalNote", client.getAdditionalNote());
+                        .append("additionalNote", client.getAdditionalNote())
+                        .append("registerDate", new Date());
 
                 clientCollection.insertOne(newClient);
                 System.out.println("Cliente insertado con id: " + clientId);

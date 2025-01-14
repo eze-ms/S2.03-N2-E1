@@ -1,5 +1,7 @@
 package gm.model;
 
+import java.util.Date;
+
 public class Client {
     private final String id;
     private String firstName;
@@ -12,12 +14,12 @@ public class Client {
     private String number;
     private String floor;
     private String additionalNote;
-
+    private final Date registerDate;
 
     // Constructor
     public Client(String id, String firstName, String lastName, String street, String number,
                   String floor, String postalCode, String city, String province,
-                  String phoneNumber, String additionalNote) {
+                  String phoneNumber, String additionalNote, Date registerDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,11 +31,16 @@ public class Client {
         this.province = province;
         this.phoneNumber = phoneNumber;
         this.additionalNote = additionalNote;
+        this.registerDate = registerDate;
     }
 
-    // Getter only for id
+    // Getter only for id and registerDate
     public String getId() {
         return id;
+    }
+
+    public Date getRegisterDate() {
+        return registerDate;
     }
 
     // Standard Getters and Setters for the rest
